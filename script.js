@@ -5,20 +5,27 @@ let id = ""
 const set_id = async () => {
     let searchtext = document.getElementById("searchtext").value
     if (searchtext != "") {
-        let i
-        for (i = 0; i < searchtext.length; i++) {
-            if (searchtext[i] != '?') {
-                continue;
-            }
-            i += 3;
+        // let i
+        // for (i = 0; i < searchtext.length; i++) {
+        //     if (searchtext[i] != '?') {
+        //         continue;
+        //     }
+        //     i += 3;
 
-            for (; i < searchtext.length; i++) {
-                if (searchtext[i] != '&')
-                    id += searchtext[i]
-                else break;
-            }
-            break;
-        }
+        //     for (; i < searchtext.length; i++) {
+        //         if (searchtext[i] != '&')
+        //             id += searchtext[i]
+        //         else break;
+        //     }
+        //     break;
+        // }
+        let url = searchtext;
+        var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        if (match && match[2].length == 11) {
+           id=match[2];
+        } 
+        console.log(id)
     }
     document.getElementById("searchtext").value = ""
     if (id == "") {
@@ -34,29 +41,32 @@ const set_id = async () => {
     }
 }
 
+
+
+
 const myonCfun = async () => {
-    let f =  await load()
+    let f = await load()
     let a = await set_id();
     if (a == 0) return;
     let b = await searchvideo();
 
 }
 
-const load = async() => {
+const load = async () => {
     let downloadEr = document.getElementById("downloadEr")
-        ihtml = ""
-        ihtml =
-    `
+    ihtml = ""
+    ihtml =
+        `
         <div class="loader">
              <div class="round"></div>
         </div>
     `
-    downloadEr.innerHTML=ihtml
-    
+    downloadEr.innerHTML = ihtml
+
 }
 
 const searchvideo = async () => {
-   
+
     const url = `https://yt-api.p.rapidapi.com/dl?id=${id}`;
     const options = {
         method: 'GET',
@@ -102,13 +112,15 @@ const searchvideo = async () => {
                         </div>
                         <div class="item items4">
                             <p>Audio : <span>audio/mp4</span></p>
-                            <a href="${value.adaptiveFormats[25].url}" >Download</a>
+                            <a href="${value.adaptiveFormats[value.adaptiveFormats.length-1].url}" >Download</a>
                         </div>
                     </div>
                 </div>
             </div>
             `
         downloadEr.innerHTML = ihtml;
-       
+
     })
 }
+
+
